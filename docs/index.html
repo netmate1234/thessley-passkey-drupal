@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" class="boot">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thessley Passkey for Drupal — deck</title>
+<style>
+  :root{
+    --bg:#0a0d16; --bg2:#0f1524; --panel:rgba(255,255,255,.045);
+    --ink:#eef1f7; --dim:#9aa6bd; --line:rgba(255,255,255,.09);
+    --violet:#7c6cf0; --violet2:#a99bff; --cyan:#35d0c0; --amber:#f2b544; --rose:#ff7a90;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#05070c;color:var(--ink);
+    font:400 16px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden}
+  .deck{position:relative;width:1280px;height:720px;transform-origin:center center}
+  .slide{position:absolute;inset:0;padding:64px 72px;border-radius:18px;overflow:hidden;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(124,108,240,.22), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(53,208,192,.14), transparent 60%),
+      linear-gradient(160deg,var(--bg2),var(--bg) 60%);
+    border:1px solid var(--line);
+    opacity:0;transform:translateY(14px) scale(.995);pointer-events:none;
+    transition:opacity .28s ease, transform .28s ease}
+  .slide.on{opacity:1;transform:none;pointer-events:auto}
+  .boot .slide{transition:none!important}
+  .kicker{display:inline-flex;align-items:center;gap:10px;font-size:14px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--violet2);font-weight:650}
+  .kicker:before{content:"";width:26px;height:2px;background:linear-gradient(90deg,var(--violet),var(--cyan));border-radius:2px}
+  h1{font-size:76px;line-height:1.02;letter-spacing:-.035em;margin:18px 0 0;font-weight:800}
+  h2{font-size:46px;line-height:1.08;letter-spacing:-.03em;margin:10px 0 6px;font-weight:780}
+  h3{font-size:20px;margin:0 0 6px;font-weight:700}
+  p{margin:0;color:var(--dim)}
+  .lead{font-size:24px;line-height:1.45;color:#c9d2e4;max-width:60ch;margin-top:16px}
+  .muted{color:var(--dim)}
+  .grad{background:linear-gradient(100deg,#fff 10%,var(--violet2) 55%,var(--cyan) 95%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .row{display:flex;gap:18px}
+  .grid{display:grid;gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .card .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(135deg,rgba(124,108,240,.28),rgba(53,208,192,.2));
+    border:1px solid rgba(255,255,255,.12);margin-bottom:14px}
+  .card p{font-size:16px;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .chip{font-size:15px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);color:#cfd8ea}
+  .chip b{color:#fff;font-weight:650}
+  .stat{font-size:44px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .stat small{display:block;font-size:14px;font-weight:600;color:var(--dim);letter-spacing:.06em;
+    text-transform:uppercase;margin-top:8px}
+  .foot{position:absolute;left:72px;right:72px;bottom:26px;display:flex;justify-content:space-between;
+    align-items:center;font-size:13px;color:#6f7b92;letter-spacing:.04em}
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;
+    font-size:13px;font-weight:650;border:1px solid rgba(124,108,240,.4);background:rgba(124,108,240,.12);color:#cfc7ff}
+  .badge.g{border-color:rgba(53,208,192,.35);background:rgba(53,208,192,.1);color:#bdf3ec}
+  .num{font-variant-numeric:tabular-nums}
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{position:relative;padding-left:26px;margin:12px 0;color:#c6cfe0;font-size:18px}
+  ul.clean li:before{content:"";position:absolute;left:2px;top:.55em;width:8px;height:8px;
+    border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--cyan))}
+  .split{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center;height:100%}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;color:#8b97ad}
+  .mock{border:1px solid var(--line);border-radius:14px;background:#0d1220;overflow:hidden}
+  .mock .bar{display:flex;align-items:center;gap:7px;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+  .dot{width:9px;height:9px;border-radius:50%;background:#2b3449}
+  .mock .body{padding:18px}
+  .qr{width:132px;height:132px;border-radius:10px;background:#fff;display:grid;place-items:center}
+  .pill{display:inline-block;font-size:12px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:#aeb9cd}
+  .pill.ok{border-color:rgba(53,208,192,.4);color:#9fe9df;background:rgba(53,208,192,.08)}
+  #nav{position:fixed;right:18px;bottom:16px;display:flex;gap:8px;z-index:5}
+  #nav button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
+    background:rgba(20,26,40,.85);color:#cfd8ea;cursor:pointer;font-size:16px}
+  #nav button:hover{background:rgba(124,108,240,.25)}
+  #dots{position:fixed;left:18px;bottom:22px;display:flex;gap:6px;z-index:5}
+  #dots i{width:7px;height:7px;border-radius:50%;background:#2b3449;transition:.2s}
+  #dots i.on{background:var(--violet2);box-shadow:0 0 0 3px rgba(124,108,240,.18)}
+  #count{position:fixed;right:18px;bottom:62px;font-size:12px;color:#6f7b92;z-index:5}
+  @media print{
+    @page{size:1280px 720px;margin:0}
+    html,body{background:#fff}
+    #stage{position:static;display:block;overflow:visible}
+    .deck{transform:none!important;width:1280px;height:auto}
+    .slide{position:relative;opacity:1;transform:none;page-break-after:always;border-radius:0;
+      width:1280px;height:720px}
+    #nav,#dots,#count{display:none}
+  }
+
+  .clean #nav,.clean #dots,.clean #count{display:none}
+  .clean .deck{transform:none!important}
+  .clean .slide{border-radius:0;border:0}
+</style></head>
+<body>
+<div id="stage"><div class="deck" id="deck">
+  <section class="slide on" data-t="Title">
+    <div class="kicker">Thessley for Drupal</div>
+    <h1>Passwordless<br><span class="grad">Drupal.</span></h1>
+    <p class="lead">The same phone app as the WordPress plugin, for Drupal 10.6 and 11. QR or one tap, confirmed with the device's own lock.</p>
+    <div class="chips"><span class="chip"><b>thessley_passkey</b> · login</span><span class="chip"><b>windows_access</b> · AD</span><span class="chip"><b>GPL</b> · no external service</span></div>
+    <div class="foot"><span>thessley</span><span class="mono">possession · approval · attestation</span></div>
+  </section>
+  <section class="slide" data-t="Flow">
+    <div class="kicker">Flow</div>
+    <h2>Four steps, no shared secret</h2>
+    <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-top:34px">
+      <div class="card"><div class="stat num">1</div><h3 style="margin-top:12px">Request</h3><p>The module mints a one-time id, nonce and origin with a short life.</p></div>
+      <div class="card"><div class="stat num">2</div><h3 style="margin-top:12px">Scan</h3><p>The QR or tap link hands the request to the app.</p></div>
+      <div class="card"><div class="stat num">3</div><h3 style="margin-top:12px">Sign</h3><p>The device lock authorises an ECDSA P-256 signature.</p></div>
+      <div class="card"><div class="stat num">4</div><h3 style="margin-top:12px">Verify</h3><p>The module checks the enrolled key and origin, then issues the session.</p></div>
+    </div>
+    <div class="foot"><span>thessley</span><span class="mono">public key only, nothing replayable</span></div>
+  </section>
+  <section class="slide" data-t="Modules">
+    <div class="kicker">Modules</div>
+    <h2>Two modules, one protocol</h2>
+    <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:26px">
+      <div class="card"><h3>thessley_passkey</h3><ul class="clean" style="font-size:16px">
+        <li>QR / one-tap login on <span class="mono">/user/login</span>.</li>
+        <li>Optional, password-then-app, or app-only.</li>
+        <li>Per-user device list, attestation, revocation.</li></ul></div>
+      <div class="card"><h3>thessley_windows_access</h3><ul class="clean" style="font-size:16px">
+        <li>Distributed Windows account enrolment.</li>
+        <li>PAM sign-in approvals.</li>
+        <li>Group-based resource access; depends on the passkey module.</li></ul></div>
+    </div>
+    <div class="foot"><span>thessley</span><span class="mono">Drupal 10.6 / 11 · PHP 8.3</span></div>
+  </section>
+  <section class="slide" data-t="Install">
+    <div class="kicker">Install</div>
+    <h2>Copy, enable, configure</h2>
+    <div class="card" style="margin-top:24px">
+      <div class="mono" style="font-size:13px;line-height:1.8;color:#c6cfe0">
+git clone https://github.com/netmate1234/thessley-passkey-drupal.git /tmp/thessley-drupal<br>
+cp -r /tmp/thessley-drupal/thessley_passkey /path/to/drupal/web/modules/contrib/<br>
+cp -r /tmp/thessley-drupal/thessley_windows_access /path/to/drupal/web/modules/contrib/<br>
+drush en thessley_passkey thessley_windows_access &amp;&amp; drush cr
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px"><p>Then open <span class="mono">/admin/config/people/thessley-passkey</span> and choose a login method. The verify step: <span class="mono">/user/login</span> shows the QR box and an enrolled phone can sign in.</p></div>
+    <div class="foot"><span>thessley</span><span class="mono">thessley-passkey-drupal</span></div>
+  </section>
+  <section class="slide" data-t="Close">
+    <div class="kicker">Thessley</div>
+    <h1 style="font-size:60px">The phone is the factor.<br><span class="grad">The site keeps a key.</span></h1>
+    <p class="lead">Same app, same protocol, same audit trail — WordPress, Drupal, Linux and Windows.</p>
+    <div class="chips"><span class="chip"><b>thessley_passkey</b></span><span class="chip"><b>windows_access</b></span><span class="chip"><b>GPL-2.0-or-later</b></span></div>
+    <div class="foot"><span>thessley</span><span class="mono">possession · approval · attestation</span></div>
+  </section>
+</div></div>
+<div id="dots"></div><div id="count"></div>
+<div id="nav"><button id="prev" aria-label="Previous slide">←</button><button id="next" aria-label="Next slide">→</button></div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var deck = document.getElementById('deck');
+  var dots = document.getElementById('dots');
+  var count = document.getElementById('count');
+  var i = 0;
+
+  slides.forEach(function (s, n) {
+    var d = document.createElement('i');
+    d.title = s.dataset.t || ('Slide ' + (n + 1));
+    dots.appendChild(d);
+  });
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + (s * 0.94) + ')';
+  }
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle('on', k === i); });
+    Array.prototype.forEach.call(dots.children, function (d, k) { d.classList.toggle('on', k === i); });
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+  }
+
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+
+  document.addEventListener('keydown', function (e) {
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) >= 0) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) >= 0) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') { show(0); }
+    if (e.key === 'End') { show(slides.length - 1); }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#nav') || e.target.closest('a')) return;
+    if (e.clientX > window.innerWidth * 0.62) show(i + 1);
+    else if (e.clientX < window.innerWidth * 0.38) show(i - 1);
+  });
+
+  window.addEventListener('resize', fit);
+  if (location.search.indexOf('clean') >= 0) { document.body.classList.add('clean'); }
+  fit();
+  var start = parseInt((location.hash || '').replace('#', ''), 10);
+  show(isFinite(start) && start > 0 ? start - 1 : 0);
+  requestAnimationFrame(function () { document.documentElement.classList.remove('boot'); });
+})();
+
+</script>
+</body></html>

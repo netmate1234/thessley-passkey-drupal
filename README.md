@@ -41,7 +41,7 @@ No shared secret is stored; the server keeps public keys only.
 ## Related
 
 - [Thessley](https://github.com/netmate1234/Thessley) — project family and overview deck
-- [Thessley Passkey server](https://github.com/netmate1234/thessley-passkey-server) — protocol reference and WordPress implementation
+- [Thessley Passkey protocol](https://github.com/netmate1234/thessley-passkey-server) — the wire format these modules implement
 - [Thessley Passkey for WordPress](https://github.com/netmate1234/thessley-passkey) — the same login for WordPress
 
 ## License

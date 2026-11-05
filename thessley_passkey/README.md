@@ -27,8 +27,17 @@ Then:
    (`/user/{uid}/passkey`).
 4. Behind a proxy / with `$base_url` set, put the public address in the
    *Public site URL* field (or leave it empty if `trusted_host_patterns` is set
-   and the request carries the real scheme). That exact value is what the app
-   signs, so it must match what people enrolled with.
+    and the request carries the real scheme). That exact value is what the app
+    signs, so it must match what people enrolled with.
+
+The default login mode is optional. Test on a development copy first, retain a separate Drupal administrator recovery route, and do not select required mode until multiple approvers and recovery have been tested. If required mode blocks login, use Drush/hosting access to restore the password-and-QR mode, then rebuild caches:
+
+```sh
+drush config:set thessley_passkey.settings mode optional -y
+drush cr
+```
+
+If that does not restore access, disable the module through the documented Drupal recovery route; avoid uninstalling it unless removal of its data is intended.
 
 ## Login methods (site-wide)
 

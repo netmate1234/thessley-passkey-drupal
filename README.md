@@ -11,12 +11,13 @@ Passwordless and second-factor login for Drupal with the Thessley Passkey app: a
 ```sh
 git clone https://github.com/netmate1234/thessley-passkey-drupal.git /tmp/thessley-drupal
 cp -r /tmp/thessley-drupal/thessley_passkey        /path/to/drupal/web/modules/contrib/
-cp -r /tmp/thessley-drupal/thessley_windows_access /path/to/drupal/web/modules/contrib/
-drush en thessley_passkey thessley_windows_access
+drush en thessley_passkey
 drush cr
 ```
 
 Then open **/admin/config/people/thessley-passkey** and pick a login method.
+
+**Lockout prevention:** install and test the login module first in optional mode; keep a separate Drupal administrator recovery route and a tested database/files backup. Do not select app-required mode until multiple approvers and recovery have been proven. Install `thessley_windows_access` separately only for a scoped development pilot after reviewing its own prototype warnings; it is an infrastructure access integration, not a routine prerequisite. To recover a broken site login, use the hosting/Drush route to revert the module's login-mode configuration or disable the module; avoid uninstalling it unless data removal is intended.
 
 **Verify:** `/user/login` shows the QR box; a phone enrolled on the site can approve and sign in.
 
